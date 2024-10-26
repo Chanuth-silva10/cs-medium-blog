@@ -26,11 +26,11 @@ public class RoleSeeder implements ApplicationListener<ContextRefreshedEvent> {
     }
 
     private void loadRoles() {
-        RoleEnum[] roleNames = new RoleEnum[] { RoleEnum.USER, RoleEnum.ADMIN, RoleEnum.SUPER_ADMIN };
+        RoleEnum[] roleNames = new RoleEnum[] { RoleEnum.USER, RoleEnum.ADMIN, RoleEnum.OWNER };
         Map<RoleEnum, String> roleDescriptionMap = Map.of(
-                RoleEnum.USER, "Default user role",
-                RoleEnum.ADMIN, "Administrator role",
-                RoleEnum.SUPER_ADMIN, "Super Administrator role"
+                RoleEnum.USER, "can access the authenticated user details for Default user",
+                RoleEnum.ADMIN, "can access authenticated user details and list all users for administrator",
+                RoleEnum.OWNER, "has access to all endpoints, including creating an administrator for owner"
         );
 
         Arrays.stream(roleNames).forEach((roleName) -> {

@@ -33,14 +33,14 @@ public class AdminSeeder implements ApplicationListener<ContextRefreshedEvent> {
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-        this.createSuperAdministrator();
+        this.createOwnerAdministrator();
     }
 
-    private void createSuperAdministrator() {
+    private void createOwnerAdministrator() {
         RegisterUserDto userDto = new RegisterUserDto();
-        userDto.setFullName("Super Admin").setEmail("super.admin@email.com").setPassword("123456");
+        userDto.setFullName("Company Owner").setEmail("owner.chanuth@email.com").setPassword("123456");
 
-        Optional<Role> optionalRole = roleRepository.findByName(RoleEnum.SUPER_ADMIN);
+        Optional<Role> optionalRole = roleRepository.findByName(RoleEnum.OWNER);
         Optional<User> optionalUser = userRepository.findByEmail(userDto.getEmail());
 
         if (optionalRole.isEmpty() || optionalUser.isPresent()) {
