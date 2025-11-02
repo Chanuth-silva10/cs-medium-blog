@@ -24,13 +24,13 @@ public class DataSeeder implements ApplicationListener<ContextRefreshedEvent> {
 
   @Override
   public void onApplicationEvent(ContextRefreshedEvent event) {
-    Movie movie1 = new Movie("Movie 1", "Movie 1 description", 2020);
-    Movie movie2 = new Movie("Movie 2", "Movie 2 description", 2021);
+    Movie movie1 = new Movie("Aloko Udapadi", "A historical epic about King Valagamba and the preservation of Buddhism in Sri Lanka.", 2017);
+    Movie movie2 = new Movie("Ho Gaana Pokuna", "A heartwarming story about a teacher and her students in a rural Sri Lankan village.", 2015);
 
     Movie createdMovie1 = movieRepository.save(movie1);
     Movie createdMovie2 = movieRepository.save(movie2);
 
-    User user = new User("user@email.com", "John Doe");
+    User user = new User("chanuthsilva@gmail.com", "Chanuth Silva");
 
     Set<Movie> movies = new HashSet<>();
     movies.add(createdMovie1);
