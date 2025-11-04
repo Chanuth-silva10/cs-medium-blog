@@ -1,16 +1,10 @@
-package com.tericcabrel.movie.entities;
+package com.chanuth.movie.entities;
 
+import org.hibernate.annotations.CreationTimestamp;
+
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
-import javax.persistence.MapsId;
-import javax.persistence.Table;
-import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
 @Table(name = "users_movies")

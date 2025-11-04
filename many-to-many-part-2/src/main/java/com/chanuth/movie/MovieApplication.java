@@ -1,4 +1,4 @@
-package com.tericcabrel.movie;
+package com.chanuth.movie;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

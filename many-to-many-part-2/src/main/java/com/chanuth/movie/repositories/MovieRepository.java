@@ -1,6 +1,6 @@
-package com.tericcabrel.movie.repositories;
+package com.chanuth.movie.repositories;
 
-import com.tericcabrel.movie.entities.Movie;
+import com.chanuth.movie.entities.Movie;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
