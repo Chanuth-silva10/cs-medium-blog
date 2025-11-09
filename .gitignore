@@ -1,0 +1,58 @@
+# Global ignores
+*.log
+*.tmp
+*.swp
+*.swo
+*.DS_Store
+Thumbs.db
+
+# Maven/Java
+**/target/
+**/logs/
+**/mvnw.cmd
+**/mvnw
+**/.mvn/
+**/.classpath
+**/.project
+**/.settings/
+
+# Node.js
+**/node_modules/
+node_modules/
+**/dist/
+**/build/
+**/.env
+**/.env.*
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+
+# TypeScript
+**/*.tsbuildinfo
+
+# VSCode
+.vscode/
+
+# OS generated
+.DS_Store
+Thumbs.db
+
+# JetBrains IDEs
+*.iml
+.idea/
+
+# Uploads and temp files
+**/uploads/
+**/uploads/files/
+
+# Prisma
+**/prisma/dev.db
+**/prisma/dev.db-journal
+
+# Misc
+*.bak
+*.orig
+*.rej
+
+# Ignore ecosystem config
+**/ecosystem.config.js
