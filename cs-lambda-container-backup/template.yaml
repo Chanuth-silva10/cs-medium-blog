@@ -1,0 +1,111 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Weekly PostgreSQL backup to S3, in a Lambda function packaged as a container image
+
+Parameters:
+  ImageUri:
+    Type: String
+    Description: The image in Amazon ECR, preferably with a digest, for example 123456789012.dkr.ecr.eu-west-2.amazonaws.com/devcraft/db-backup@sha256:...
+  DatabaseSecretArn:
+    Type: String
+    Description: The Secrets Manager secret with host, port, dbname, username and password
+  BackupBucketName:
+    Type: String
+    Description: The name of the bucket that will hold the backups (it is created by this template)
+  RetentionDays:
+    Type: Number
+    Default: 90
+    MinValue: 1
+  SubnetIds:
+    Type: CommaDelimitedList
+    Default: ''
+    Description: Only if the database is in a private network, the subnets where the function runs
+  SecurityGroupIds:
+    Type: CommaDelimitedList
+    Default: ''
+    Description: Only if the database is in a private network, the security groups of the function
+
+Conditions:
+  UseVpc: !Not [!Equals [!Join ['', !Ref SubnetIds], '']]
+
+Resources:
+  BackupBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      BucketName: !Ref BackupBucketName
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      VersioningConfiguration:
+        Status: Enabled
+      LifecycleConfiguration:
+        Rules:
+          - Id: expire-old-backups
+            Status: Enabled
+            ExpirationInDays: !Ref RetentionDays
+            NoncurrentVersionExpiration:
+              NoncurrentDays: 7
+
+  BackupFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Image
+      ImageUri: !Ref ImageUri
+      Timeout: 900
+      MemorySize: 1024
+      Environment:
+        Variables:
+          BACKUP_BUCKET: !Ref BackupBucket
+          BACKUP_PREFIX: backups/
+          DB_SECRET_ARN: !Ref DatabaseSecretArn
+      VpcConfig: !If
+        - UseVpc
+        - SubnetIds: !Ref SubnetIds
+          SecurityGroupIds: !Ref SecurityGroupIds
+        - !Ref AWS::NoValue
+      Policies:
+        - Statement:
+            - Effect: Allow
+              Action:
+                - s3:PutObject
+                - s3:DeleteObject
+              Resource: !Sub '${BackupBucket.Arn}/backups/*'
+            - Effect: Allow
+              Action: secretsmanager:GetSecretValue
+              Resource: !Ref DatabaseSecretArn
+      Events:
+        WeeklyBackup:
+          Type: Schedule
+          Properties:
+            # Every Saturday at 02:30 UTC.
+            Schedule: cron(30 2 ? * SAT *)
+
+  FailureAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmDescription: The database backup failed
+      Namespace: AWS/Lambda
+      MetricName: Errors
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref BackupFunction
+      Statistic: Sum
+      Period: 3600
+      EvaluationPeriods: 1
+      Threshold: 1
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: notBreaching
+
+Outputs:
+  FunctionName:
+    Value: !Ref BackupFunction
+  BucketName:
+    Value: !Ref BackupBucket

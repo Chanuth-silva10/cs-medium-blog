@@ -1,0 +1,22 @@
+services:
+  mysql:
+    image: mysql:8.4
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: devRootPwd
+      MYSQL_DATABASE: devcraft_auth
+      MYSQL_USER: devcraft
+      MYSQL_PASSWORD: devcraftPwd
+    ports:
+      # Only the container port: Docker picks a free port on your machine, so it never clashes
+      # with a MySQL you already run. Spring Boot reads the real port from Docker.
+      - "3306"
+    volumes:
+      - devcraft-db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root", "-pdevRootPwd"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+volumes:
+  devcraft-db-data:

@@ -1,0 +1,27 @@
+"""
+A moment in time, written as an ISO 8601 text with a time zone, for example 2026-11-03T09:30:00+05:30
+or 2026-11-03T04:00:00Z. It is always returned in UTC with milliseconds: 2026-11-03T04:00:00.000Z.
+"""
+scalar DateTime
+
+type Member {
+  id: ID!
+  name: String!
+  email: String!
+  joinedAt: DateTime!
+}
+
+input RegisterMemberInput {
+  name: String!
+  email: String!
+  joinedAt: DateTime!
+}
+
+type Query {
+  "All members, oldest first. With joinedAfter, only the ones who joined after that moment."
+  members(joinedAfter: DateTime): [Member!]!
+}
+
+type Mutation {
+  registerMember(input: RegisterMemberInput!): Member!
+}

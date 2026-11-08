@@ -1,0 +1,6 @@
+node_modules
+test
+template.yaml
+*.md
+.git
+.env

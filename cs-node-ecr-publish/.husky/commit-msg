@@ -1,0 +1,11 @@
+# Check the commit message with this project's commitlint rules.
+# Works when this project is the repo root and when it lives in a subfolder of a bigger repo.
+msg_file="$(pwd)/$1"
+cd "$(dirname "$0")/.."
+
+# In a shared repo, only check commits that change files inside this project.
+if [ -z "$(git diff --cached --name-only --relative)" ]; then
+  exit 0
+fi
+
+npx --no-install commitlint --edit "$msg_file"

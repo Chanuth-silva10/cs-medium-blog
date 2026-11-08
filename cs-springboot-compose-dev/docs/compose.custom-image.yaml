@@ -1,0 +1,17 @@
+# Example for a custom image. Run it with:
+#   mvn spring-boot:run -Dspring-boot.run.arguments=--spring.docker.compose.file=docs/compose.custom-image.yaml
+# The label tells Spring Boot which service this image really is. Without it the image is not
+# recognised and the application fails with "Failed to determine a suitable driver class".
+services:
+  mysql:
+    image: devcraft/mysql-custom:1.0
+    restart: unless-stopped
+    labels:
+      org.springframework.boot.service-connection: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: devRootPwd
+      MYSQL_DATABASE: devcraft_auth
+      MYSQL_USER: devcraft
+      MYSQL_PASSWORD: devcraftPwd
+    ports:
+      - "3306"

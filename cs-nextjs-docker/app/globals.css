@@ -1,0 +1,25 @@
+body {
+  font-family: system-ui, sans-serif;
+  margin: 0;
+  background: #111827;
+  color: #e5e7eb;
+}
+
+main {
+  max-width: 34rem;
+  margin: 4rem auto;
+  padding: 2rem;
+  background: #1f2937;
+  border-radius: 0.75rem;
+}
+
+dt {
+  margin-top: 1rem;
+  color: #9ca3af;
+  font-size: 0.85rem;
+}
+
+dd {
+  margin: 0.25rem 0 0;
+  font-weight: 600;
+}

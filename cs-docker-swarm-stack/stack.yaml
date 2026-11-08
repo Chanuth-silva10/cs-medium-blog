@@ -1,0 +1,41 @@
+# Deploy with:   docker stack deploy -c stack.yaml devcraft
+# Another version: IMAGE=localhost:5000/devcraft/whoami:2.0.0 docker stack deploy -c stack.yaml devcraft
+services:
+  api:
+    image: ${IMAGE:-localhost:5000/devcraft/whoami:1.0.0}
+    networks:
+      - backend
+    ports:
+      # The routing mesh: every node of the swarm answers on 8090 and spreads the requests over the replicas.
+      - "8090:3000"
+    deploy:
+      mode: replicated
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+      update_config:
+        parallelism: 1
+        delay: 5s
+        # Start the new replica before stopping the old one: no moment without a replica.
+        order: start-first
+        # Watch the new replicas for 15 seconds, and go back if they fail.
+        monitor: 15s
+        failure_action: rollback
+      rollback_config:
+        parallelism: 1
+        order: stop-first
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: 128M
+        reservations:
+          cpus: "0.10"
+          memory: 32M
+      placement:
+        constraints:
+          - node.platform.os == linux
+networks:
+  backend:
+    driver: overlay

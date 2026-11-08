@@ -1,0 +1,37 @@
+{
+  "name": "cs-report-generator",
+  "version": "1.0.0",
+  "description": "A report generator service (Node + Puppeteer + MongoDB) run with Docker Compose - part of the DevCraft series",
+  "type": "module",
+  "main": "dist/index.js",
+  "license": "MIT",
+  "author": "CS Solution",
+  "private": false,
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "node --env-file=.env --import tsx --watch src/index.ts",
+    "build": "tsc",
+    "start": "node --env-file=.env dist/index.js",
+    "lint": "eslint \"src/**/*.ts\"",
+    "lint:fix": "eslint \"src/**/*.ts\" --fix",
+    "format": "prettier --write \"src/**/*.ts\""
+  },
+  "dependencies": {
+    "express": "5.1.0",
+    "mongoose": "8.8.1",
+    "puppeteer": "25.16.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "9.15.0",
+    "@types/express": "5.0.3",
+    "@types/node": "22.9.1",
+    "eslint": "9.15.0",
+    "eslint-config-prettier": "9.1.0",
+    "prettier": "3.3.3",
+    "tsx": "4.19.2",
+    "typescript": "5.6.3",
+    "typescript-eslint": "8.15.0"
+  }
+}

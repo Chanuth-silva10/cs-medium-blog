@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>DevCraft EMI Calculator</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body>
+<main>
+    <h1>EMI Calculator</h1>
+    <p class="intro">Enter a loan and see the monthly payment.</p>
+    <section th:if="${result}" class="result" role="status">
+        <p>Monthly payment: <strong th:text="${#numbers.formatDecimal(result.monthlyPayment, 1, 'COMMA', 2, 'POINT')}">0</strong></p>
+        <p>Total interest: <strong th:text="${#numbers.formatDecimal(result.totalInterest, 1, 'COMMA', 2, 'POINT')}">0</strong></p>
+        <p>Total payable: <strong th:text="${#numbers.formatDecimal(result.totalPayable, 1, 'COMMA', 2, 'POINT')}">0</strong></p>
+    </section>
+    <form th:action="@{/}" method="post" th:object="${loanForm}">
+        <label for="amount">Loan amount</label>
+        <input id="amount" type="number" step="any" th:field="*{amount}">
+        <span class="error" th:errors="*{amount}">error</span>
+        <label for="rate">Yearly interest rate (%)</label>
+        <input id="rate" type="number" step="any" th:field="*{rate}">
+        <span class="error" th:errors="*{rate}">error</span>
+        <label for="months">Number of months</label>
+        <input id="months" type="number" th:field="*{months}">
+        <span class="error" th:errors="*{months}">error</span>
+        <button type="submit">Calculate</button>
+    </form>
+</main>
+</body>
+</html>
+
