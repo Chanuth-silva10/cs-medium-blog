@@ -1,0 +1,71 @@
+name: Publish image to Amazon ECR
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+# A new push on the same branch cancels the run that is still going.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+# id-token lets the job ask GitHub for a short-lived identity token (OpenID Connect).
+# AWS exchanges it for temporary credentials, so no AWS key is stored in GitHub.
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  ECR_REPOSITORY: devcraft/task-api
+
+jobs:
+  build:
+    # Pull requests only prove that the image still builds. Nothing is pushed.
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build the image without pushing it
+        run: docker build --tag "${ECR_REPOSITORY}:pr-check" .
+
+  publish:
+    # Only code that was merged on main reaches the registry.
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+      - name: Log in to Amazon ECR
+        id: login-to-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+      - name: Build and push the image
+        id: push
+        env:
+          REGISTRY: ${{ steps.login-to-ecr.outputs.registry }}
+        run: |
+          image="${REGISTRY}/${ECR_REPOSITORY}:sha-${GITHUB_SHA::7}"
+          docker build --tag "$image" .
+          docker push "$image"
+          # A local image can carry digests of several repositories: keep the one of this registry.
+          digest="$(docker inspect --format '{{range .RepoDigests}}{{println .}}{{end}}' "$image" | grep "^${REGISTRY}/${ECR_REPOSITORY}@" | head -n 1)"
+          echo "image=$image" >> "$GITHUB_OUTPUT"
+          echo "digest=$digest" >> "$GITHUB_OUTPUT"
+      - name: Write the result in the job summary
+        env:
+          IMAGE: ${{ steps.push.outputs.image }}
+          DIGEST: ${{ steps.push.outputs.digest }}
+        run: |
+          {
+            echo "### Image published"
+            echo "- Tag: \`${IMAGE}\`"
+            echo "- Digest: \`${DIGEST}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+

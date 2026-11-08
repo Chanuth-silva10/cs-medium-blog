@@ -1,0 +1,3 @@
+# Git hooks run with sh, which breaks on Windows (CRLF) line endings. Keep them as LF.
+.husky/* text eol=lf
+*.sh text eol=lf

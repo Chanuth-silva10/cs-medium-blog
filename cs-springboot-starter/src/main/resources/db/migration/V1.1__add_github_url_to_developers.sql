@@ -1,0 +1,1 @@
+ALTER TABLE developers ADD COLUMN github_url VARCHAR(200) NULL;

@@ -1,0 +1,52 @@
+name: devcraft-mongo-backup
+
+# A practice lab: two separate MongoDB servers (a "source" with data and an empty "target"), and a
+# "tools" container that has mongodump, mongorestore, mongoexport, mongoimport and mongosh.
+x-mongo: &mongo
+  image: mongo:7.0.14
+  restart: unless-stopped
+  environment:
+    MONGO_INITDB_ROOT_USERNAME: devcraft
+    MONGO_INITDB_ROOT_PASSWORD: devcraftPwd
+  healthcheck:
+    test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+    interval: 5s
+    timeout: 5s
+    retries: 20
+    start_period: 5s
+
+services:
+  mongo-source:
+    <<: *mongo
+    container_name: mongo-source
+    ports:
+      - "27031:27017"
+    volumes:
+      - source-data:/data/db
+  mongo-target:
+    <<: *mongo
+    container_name: mongo-target
+    ports:
+      - "27032:27017"
+    volumes:
+      - target-data:/data/db
+  tools:
+    image: mongo:7.0.14
+    container_name: mongo-tools
+    entrypoint: ["sleep", "infinity"]
+    working_dir: /work
+    depends_on:
+      mongo-source:
+        condition: service_healthy
+      mongo-target:
+        condition: service_healthy
+    environment:
+      SOURCE_URI: mongodb://devcraft:devcraftPwd@mongo-source:27017/?authSource=admin
+      TARGET_URI: mongodb://devcraft:devcraftPwd@mongo-target:27017/?authSource=admin
+    volumes:
+      - ./scripts:/work/scripts:ro
+      - ./backups:/backups
+
+volumes:
+  source-data:
+  target-data:

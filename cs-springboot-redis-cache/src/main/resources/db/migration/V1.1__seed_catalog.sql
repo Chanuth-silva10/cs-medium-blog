@@ -1,0 +1,32 @@
+INSERT INTO categories (id, name, description)
+VALUES (1, 'Phones', 'Smartphones and feature phones'),
+       (2, 'Laptops', 'Notebooks for work and play'),
+       (3, 'Tablets', 'Tablets and e-readers'),
+       (4, 'Audio', 'Headphones and speakers'),
+       (5, 'Accessories', 'Cables, chargers and cases');
+
+INSERT INTO products (name, description, price, available, category_id)
+VALUES ('iPhone 16', 'Apple smartphone, 128 GB', 899.00, TRUE, 1),
+       ('iPhone 16 Pro', 'Apple smartphone, 256 GB', 1199.00, TRUE, 1),
+       ('iPhone 15', 'Apple smartphone, 128 GB', 699.00, FALSE, 1),
+       ('Galaxy S25', 'Samsung smartphone, 256 GB', 949.00, TRUE, 1),
+       ('Pixel 9', 'Google smartphone, 128 GB', 799.00, TRUE, 1),
+       ('Nokia 105', 'Simple feature phone', 25.00, TRUE, 1),
+       ('MacBook Air 13', 'Apple laptop, M4, 16 GB', 1099.00, TRUE, 2),
+       ('MacBook Pro 14', 'Apple laptop, M4 Pro, 24 GB', 1999.00, TRUE, 2),
+       ('ThinkPad X1 Carbon', 'Lenovo business laptop', 1649.00, FALSE, 2),
+       ('Dell XPS 13', 'Dell ultrabook', 1199.00, TRUE, 2),
+       ('Chromebook Plus', 'Lightweight laptop for school', 399.00, TRUE, 2),
+       ('iPad Air', 'Apple tablet, 11 inch', 599.00, TRUE, 3),
+       ('iPad mini', 'Apple tablet, 8.3 inch', 499.00, TRUE, 3),
+       ('Galaxy Tab S10', 'Samsung tablet', 799.00, FALSE, 3),
+       ('Kindle Paperwhite', 'Amazon e-reader', 159.00, TRUE, 3),
+       ('AirPods Pro', 'Apple wireless earbuds', 249.00, TRUE, 4),
+       ('Sony WH-1000XM6', 'Noise cancelling headphones', 429.00, TRUE, 4),
+       ('JBL Flip 7', 'Portable Bluetooth speaker', 149.00, TRUE, 4),
+       ('Sonos Era 100', 'Smart speaker', 249.00, FALSE, 4),
+       ('USB-C Cable 2m', 'Braided charging cable', 19.00, TRUE, 5),
+       ('65W USB-C Charger', 'Fast charger for phones and laptops', 49.00, TRUE, 5),
+       ('iPhone 16 Clear Case', 'Transparent case for iPhone 16', 39.00, TRUE, 5),
+       ('Laptop Sleeve 14', 'Padded sleeve for 14 inch laptops', 29.00, TRUE, 5),
+       ('Power Bank 20000', 'Portable battery, 20000 mAh', 59.00, FALSE, 5);

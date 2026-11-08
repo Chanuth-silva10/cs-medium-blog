@@ -1,0 +1,12 @@
+target/
+logs/
+*.class
+.idea/
+*.iml
+.vscode/
+.DS_Store
+
+# environment-specific config with credentials
+src/main/resources/application-dev.properties
+src/main/resources/application-staging.properties
+src/main/resources/application-prod.properties

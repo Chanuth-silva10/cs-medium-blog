@@ -1,0 +1,41 @@
+services:
+  nodeapp:
+    container_name: report-generator
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file: .env
+    ports:
+      - '4600:4600'
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - cs-report-network
+
+  mongodb:
+    container_name: report-mongodb
+    image: mongo:7.0
+    volumes:
+      - report-data:/data/db
+    ports:
+      - '127.0.0.1:27017:27017'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: report
+      MONGO_INITDB_ROOT_PASSWORD: reportPwd
+    healthcheck:
+      test: ['CMD', 'mongosh', '--quiet', '--eval', "db.adminCommand('ping').ok"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    networks:
+      - cs-report-network
+
+volumes:
+  report-data:
+
+networks:
+  cs-report-network:
+    driver: bridge
